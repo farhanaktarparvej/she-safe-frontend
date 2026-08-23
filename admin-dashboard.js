@@ -121,26 +121,72 @@ function renderStats(stats) {
   document.getElementById('statResolved').textContent = stats.resolved ?? 0;
 }
 
+function formatLatLong(alert) {
+  if (typeof alert.lat !== 'number' || typeof alert.long !== 'number') return '-';
+  return `${alert.lat.toFixed(4)}, ${alert.long.toFixed(4)}`;
+}
+
 function renderTable(alerts) {
   const tbody = document.getElementById('alertsTableBody');
   tbody.innerHTML = '';
 
   alerts.slice(0, 8).forEach((alert) => {
     const tr = document.createElement('tr');
+    tr.dataset.id = alert._id;
     const pillClass = alert.status === 'Active' ? 'active' : 'resolved';
+    const isResolved = alert.status === 'Resolved';
     tr.innerHTML = `
       <td>${alert.name || 'Unknown'}</td>
-      <td>${alert.location || '-'}</td>
+      <td>${formatLatLong(alert)}</td>
       <td>${alert.time || '-'}</td>
       <td><span class="status-pill ${pillClass}">${alert.status}</span></td>
+      <td><input type="checkbox" class="resolve-checkbox" ${isResolved ? 'checked disabled' : ''} /></td>
     `;
     tbody.appendChild(tr);
   });
 
   if (!alerts.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="color:#8a7ba3;padding-top:14px;">No alerts yet.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="color:#8a7ba3;padding-top:14px;">No alerts yet.</td></tr>`;
   }
 }
+
+// ---------- Resolve SOS via checkbox ----------
+async function resolveAlert(id) {
+  const res = await fetch(`${API_BASE}/alerts/${id}/resolve`, {
+    method: 'PATCH',
+    credentials: 'include',
+  });
+  if (res.status === 401) {
+    redirectToLogin();
+    return null;
+  }
+  if (!res.ok) throw new Error('Failed to resolve alert');
+  return res.json();
+}
+
+document.getElementById('alertsTableBody').addEventListener('change', async (e) => {
+  const checkbox = e.target;
+  if (!checkbox.classList.contains('resolve-checkbox')) return;
+
+  const tr = checkbox.closest('tr');
+  if (!tr) return;
+  const id = tr.dataset.id;
+
+  checkbox.disabled = true;
+  try {
+    await resolveAlert(id);
+    // Remove the row from the SOS alerts box, then refresh the stat cards.
+    tr.remove();
+    const stats = await fetchStats();
+    renderStats(stats);
+    const alerts = await fetchAlerts();
+    plotAlertsOnMap(alerts);
+  } catch (err) {
+    alert(err.message);
+    checkbox.checked = false;
+    checkbox.disabled = false;
+  }
+});
 
 async function refreshDashboard() {
   const [alerts, stats] = await Promise.all([fetchAlerts(), fetchStats()]);
