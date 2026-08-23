@@ -153,6 +153,13 @@ async function refreshDashboard() {
 const modalOverlay = document.getElementById('modalOverlay');
 const sosForm = document.getElementById('sosForm');
 
+document.getElementById('simulateBtn').addEventListener('click', () => {
+  const now = new Date();
+  sosForm.date.value = now.toISOString().slice(0, 10);
+  sosForm.time.value = now.toTimeString().slice(0, 5);
+  modalOverlay.classList.remove('hidden');
+});
+
 document.getElementById('cancelModal').addEventListener('click', () => {
   modalOverlay.classList.add('hidden');
 });
