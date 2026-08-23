@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Roboto+Slab:wght@100..900&display=swap');
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    height: 100vh;
+    position: relative;
+    font-family: 'Roboto Slab';
+}
+.bg-img{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+}
+.container{
+    margin: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    transform-origin: left center;
+    animation: reveal 1s ease-in-out 0s 1 normal forwards;
+}
+.about-title{
+    font-size: 3rem;
+    font-weight: 900;
+    text-decoration: underline;
+    color: rgb(3, 3, 3);
+}
+.content{
+    font-size: 1.1rem;
+    max-width: 30vw;
+}
+.home{
+     max-width: 30vw;
+    display: flex;
+    justify-content: center;
+    
+}
+.home a{
+    text-decoration: none;
+    color: white;
+    background-color: rgb(220, 22, 144);
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    transition: transform 0.3s ease-in-out;
+    font-weight: 600;
+}
+.home a:hover{
+    transform: scale(1.1);
+}
+
+@keyframes reveal{
+    0%{
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    100%{
+        transform: scale(1);
+        opacity: 1;
+    }
+}

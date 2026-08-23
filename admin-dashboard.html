@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>She Safe · Admin Dashboard</title>
+<link rel="stylesheet" href="admin-dashboard.css" />
+<!-- Leaflet (open-source maps, no API key needed) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <span class="brand-name">SHE SAFE</span>
+    </div>
+    <nav class="nav">
+      <a href="#" class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">⌂</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-view="sos">
+        <span class="nav-icon">🔔</span> SOS Alerts
+      </a>
+      <a href="#" class="nav-item" data-view="tracking">
+        <span class="nav-icon">📍</span> Live Tracking
+      </a>
+      <a href="#" class="nav-item" data-view="users">
+        <span class="nav-icon">👥</span> Users
+      </a>
+      <a href="#" class="nav-item" data-view="reports">
+        <span class="nav-icon">📄</span> Reports
+      </a>
+      <a href="#" class="nav-item" data-view="settings">
+        <span class="nav-icon">⚙</span> Settings
+      </a>
+    </nav>
+    <a href="#" class="logout">↩ Logout</a>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <header class="topbar">
+      <h1>Dashboard</h1>
+      <div class="topbar-right">
+        <button id="simulateBtn" class="btn-outline">＋ Simulate SOS</button>
+        <span class="bell">🔔<span class="badge">9</span></span>
+        <div class="admin-chip">
+          <span class="avatar">A</span> Admin
+        </div>
+      </div>
+    </header>
+
+    <p class="welcome">Welcome, Admin</p>
+    <p class="subtitle">Monitor and manage all safety alerts and system activities.</p>
+
+    <!-- Stat cards -->
+    <section class="stats">
+      <div class="stat-card purple">
+        <div class="stat-top">
+          <span class="stat-label">Total SOS Alerts</span>
+          <span class="stat-icon">🔔</span>
+        </div>
+        <div class="stat-value" id="statTotal">0</div>
+        <a href="#" class="stat-link">View all alerts →</a>
+      </div>
+
+      <div class="stat-card pink">
+        <div class="stat-top">
+          <span class="stat-label">Active Alerts</span>
+          <span class="stat-icon">🚨</span>
+        </div>
+        <div class="stat-value" id="statActive">0</div>
+        <a href="#" class="stat-link">View active →</a>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-top">
+          <span class="stat-label">Resolved Alerts</span>
+          <span class="stat-icon">✅</span>
+        </div>
+        <div class="stat-value" id="statResolved">0</div>
+        <a href="#" class="stat-link">View resolved →</a>
+      </div>
+
+      <div class="stat-card lavender">
+        <div class="stat-top">
+          <span class="stat-label">Users Registered</span>
+          <span class="stat-icon">👤</span>
+        </div>
+        <div class="stat-value" id="statUsers">342</div>
+        <a href="#" class="stat-link">View users →</a>
+      </div>
+    </section>
+
+    <!-- Table + Map -->
+    <section class="panels">
+      <div class="panel table-panel">
+        <h2>Recent SOS Alerts</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Time</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="alertsTableBody">
+            <!-- rows injected by script.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel map-panel">
+        <h2>Live Alerts Map</h2>
+        <div id="map"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Simulate SOS modal -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal">
+    <h3>Simulate an SOS Alert</h3>
+    <p class="modal-sub">Sends date, time, lat &amp; long to the backend and stores it in MongoDB.</p>
+    <form id="sosForm">
+      <label>Name
+        <input type="text" name="name" placeholder="e.g. Riya Sharma" required />
+      </label>
+      <label>Location label
+        <input type="text" name="location" placeholder="e.g. Salt Lake, Kolkata" required />
+      </label>
+      <div class="form-row">
+        <label>Date
+          <input type="date" name="date" required />
+        </label>
+        <label>Time
+          <input type="time" name="time" required />
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Latitude
+          <input type="number" step="any" name="lat" placeholder="22.5726" required />
+        </label>
+        <label>Longitude
+          <input type="number" step="any" name="long" placeholder="88.3639" required />
+        </label>
+      </div>
+      <button type="button" id="useMyLocation" class="btn-outline small">📍 Use current location</button>
+      <div class="modal-actions">
+        <button type="button" id="cancelModal" class="btn-outline">Cancel</button>
+        <button type="submit" class="btn-solid">Send Alert</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="admin-dashboard.js"></script>
+</body>
+</html>
